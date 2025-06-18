@@ -17,23 +17,35 @@ dotenv.config()
 
 const __dirname = path.resolve();
 const app = express() 
-app.options('*', cors())
 
 
-app.use(cors(
-    {
-        origin :  "http://localhost:3000",
-        credentials: true, // Allow cookies to be sent with requests
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    }
-))
+
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+    methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+    allowedHeaders: ["Content-Type","Authorization"],
+    optionsSuccessStatus: 200  // important for OPTIONS
+  }));
+  
+  // Explicitly handle preflight before Clerk
+app.options("/{*any}", (req, res) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.sendStatus(200);
+  });
+  
+  // Now apply Clerk global middleware
+app.use(clerkMiddleware());
 
 app.use(express.json({limit: "16kb"}))
 app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
 // app.use(cookieParser())
-app.use(clerkMiddleware());
+
+
 
 app.use(fileUpload({
     useTempFiles : true ,
@@ -55,7 +67,7 @@ app.use("/api/stats" , statRoutes)
 
 connectDB()
     .then(() => {
-        app.listen(process.env.PORT || 8000, () => {
+        app.listen(process.env.PORT || 1000, () => {
             console.log(`⚙️ Server is running at port : ${process.env.PORT}`);
         })
     })

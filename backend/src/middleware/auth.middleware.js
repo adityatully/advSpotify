@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 
 export const ProtectRoute = asyncHandler(async (req, res, next) => {
-    if(!req.auth.UserId){
+    if(!req.auth.userId){
         throw new ApiError(401, "Unauthorized access");
     }
     // if we have the UserId

@@ -7,6 +7,8 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 const authCallback = asyncHandler(async (req, res) => {
     const { id, firstName, lastName, imageUrl } = req.body;
+
+    console.log(firstName, lastName, imageUrl, id);
   
     if (!id || !firstName || !lastName || !imageUrl) {
       throw new ApiError(400, "Invalid request data");

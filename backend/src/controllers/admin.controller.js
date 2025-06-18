@@ -69,7 +69,7 @@ const DeleteSong = asyncHandler(async (req , res) =>{
     const song = Song.findById(Id)
 
     if(!song){
-        throw new ApiError(404 , "Please enter valid song Id")
+        throw new ApiError(404 , "Could not find the song")
     }
 
     // we can del but we also need to delete the song from the album
